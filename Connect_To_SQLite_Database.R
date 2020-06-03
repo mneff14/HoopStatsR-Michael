@@ -31,7 +31,8 @@ library(tidyverse)
 
 
 
-create_sqlite_connection <- function(db_location, db_name) {
+create_sqlite_connection <- function(db_location, # The folder where the db file is found
+                                     db_name) {
   
   ### Returns a connection to a SQLite Database file on computer
   ###
@@ -44,6 +45,9 @@ create_sqlite_connection <- function(db_location, db_name) {
   
   # Create the connection to the SQLite Database using RSQLite
   conn <- dbConnect(dbDriver("SQLite"), db_name)
+  
+  # Set the working directory back to the Project when done
+  setwd("C:\\Users\\mneff\\Documents\\Git\\HoopStatsR-Michael")
   
   # Return the connection
   return(conn)
@@ -71,15 +75,22 @@ create_sqlite_connection <- function(db_location, db_name) {
 
 
 # Create a connection to HoopStats with RSQLite
-conn <- create_sqlite_connection("C:\\Users\\mneff\\Desktop\\College Stuff\\Data Science Society\\HoopStats Project",
-                                 "HoopStats.sqlite")
+conn <- create_sqlite_connection(db_location = "C:\\Users\\mneff\\Desktop\\College Stuff\\Data Science Society\\HoopStats Project", 
+                                 db_name = "HoopStats.sqlite")
+
 
 # To test the connection, list all tables in the database
-DBI::dbListTables(conn)
+hp_tables <- DBI::dbListTables(conn)
+# print(hp_tables)
+hp_zevent_data <- DBI::dbReadTable(conn = conn, name = hp_tables[1])
+
+
+# Update changes to the database
 
 
 
-
+# Disconnect from the server when finished
+DBI::dbDisconnect(conn)
 
 
 
